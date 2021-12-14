@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Oki Documents\\Bootcamp\\C#\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj": {}
+    "D:\\Oki Documents\\Bootcamp\\CSHARP\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj": {}
   },
   "projects": {
-    "D:\\Oki Documents\\Bootcamp\\C#\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj": {
+    "D:\\Oki Documents\\Bootcamp\\CSHARP\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Oki Documents\\Bootcamp\\C#\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj",
+        "projectUniqueName": "D:\\Oki Documents\\Bootcamp\\CSHARP\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj",
         "projectName": "PaymentAPI",
-        "projectPath": "D:\\Oki Documents\\Bootcamp\\C#\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj",
+        "projectPath": "D:\\Oki Documents\\Bootcamp\\CSHARP\\FinalProject3\\PaymentAPI\\PaymentAPI\\PaymentAPI.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "D:\\Oki Documents\\Bootcamp\\C#\\FinalProject3\\PaymentAPI\\PaymentAPI\\obj\\",
+        "outputPath": "D:\\Oki Documents\\Bootcamp\\CSHARP\\FinalProject3\\PaymentAPI\\PaymentAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
