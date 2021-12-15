@@ -18,128 +18,128 @@ using PaymentAPI.Models.DTOs.Responses;
 
 namespace PaymentAPI.Controllers
 {
-        [Route("api/[controller]")]
-        [ApiController]
-        public class AuthManagementController : ControllerBase
-        {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthManagementController : ControllerBase
+    {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly JwtConfig _jwtConfig;
         private readonly TokenValidationParameters _tokenValidationParams;
         private readonly ApiDbContext _apiDbContext;
 
-        public AuthManagementController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor,TokenValidationParameters tokenValidationParams,
+        public AuthManagementController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor, TokenValidationParameters tokenValidationParams,
             ApiDbContext apiDbContext)
-            {
-                _userManager = userManager;
-                _jwtConfig = optionsMonitor.CurrentValue;
-                _tokenValidationParams = tokenValidationParams;
-                _apiDbContext = apiDbContext;
+        {
+            _userManager = userManager;
+            _jwtConfig = optionsMonitor.CurrentValue;
+            _tokenValidationParams = tokenValidationParams;
+            _apiDbContext = apiDbContext;
         }
 
-            [HttpPost]
-            [Route("Register")]
-            public async Task<IActionResult> Register([FromBody] UserRegistrationDto user)
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register([FromBody] UserRegistrationDto user)
+        {
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    // Utilize model
-                    var existingUser = await _userManager.FindByEmailAsync(user.Email);
+                // Utilize model
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
 
-                    if (existingUser != null)
+                if (existingUser != null)
+                {
+                    return BadRequest(new RegistrationResponse()
                     {
-                        return BadRequest(new RegistrationResponse()
-                        {
-                            Errors = new List<string>(){
+                        Errors = new List<string>(){
                             "Email already in use"
                         },
-                            Success = false
-                        });
-                    }
+                        Success = false
+                    });
+                }
 
-                    var newUser = new IdentityUser() { Email = user.Email, UserName = user.Username };
-                    var isCreated = await _userManager.CreateAsync(newUser, user.Password);
+                var newUser = new IdentityUser() { Email = user.Email, UserName = user.Username };
+                var isCreated = await _userManager.CreateAsync(newUser, user.Password);
 
-                    if (isCreated.Succeeded)
-                    {
-                        var jwtToken = GenerateJwtToken(newUser);
+                if (isCreated.Succeeded)
+                {
+                    var jwtToken = GenerateJwtToken(newUser);
 
                     return Ok(jwtToken);
-                        //return Ok(new RegistrationResponse()
-                        //{
-                          //  Success = true,
-                            //Token = jwtToken
-                        //});
-                    }
-                    else
-                    {
-                        return BadRequest(new RegistrationResponse()
-                        {
-                            Errors = isCreated.Errors.Select(x => x.Description).ToList(),
-                            Success = false
-                        });
-                    }
-                }
-
-                return BadRequest(new RegistrationResponse()
-                {
-                    Errors = new List<string>(){
-                        "Invalid Payload"
-                    },
-                    Success = false
-                });
-            }
-
-           
-            [HttpPost]
-            [Route("Login")]
-            public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
-            {
-                if (ModelState.IsValid)
-                {
-                    var existingUser = await _userManager.FindByEmailAsync(user.Email);
-
-                    if (existingUser == null)
-                    {
-                        return BadRequest(new RegistrationResponse()
-                        {
-                            Errors = new List<string>(){
-                            "Invalid login request"
-                        },
-                            Success = false
-                        });
-                    }
-
-                    var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
-
-                    if (!isCorrect)
-                    {
-                        return BadRequest(new RegistrationResponse()
-                        {
-                            Errors = new List<string>(){
-                            "Invalid login request"
-                        },
-                            Success = false
-                        });
-                    }
-
-                    var jwtToken = GenerateJwtToken(existingUser);
-
-                return Ok(jwtToken);
-                   // return Ok(new RegistrationResponse()
+                    //return Ok(new RegistrationResponse()
                     //{
-                      //  Success = true,
-                        //Token = jwtToken
+                    //  Success = true,
+                    //Token = jwtToken
                     //});
                 }
-
-                return BadRequest(new RegistrationResponse()
+                else
                 {
-                    Errors = new List<string>(){
+                    return BadRequest(new RegistrationResponse()
+                    {
+                        Errors = isCreated.Errors.Select(x => x.Description).ToList(),
+                        Success = false
+                    });
+                }
+            }
+
+            return BadRequest(new RegistrationResponse()
+            {
+                Errors = new List<string>(){
+                        "Invalid Payload"
+                    },
+                Success = false
+            });
+        }
+
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+                if (existingUser == null)
+                {
+                    return BadRequest(new RegistrationResponse()
+                    {
+                        Errors = new List<string>(){
+                            "Invalid login request"
+                        },
+                        Success = false
+                    });
+                }
+
+                var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
+
+                if (!isCorrect)
+                {
+                    return BadRequest(new RegistrationResponse()
+                    {
+                        Errors = new List<string>(){
+                            "Invalid login request"
+                        },
+                        Success = false
+                    });
+                }
+
+                var jwtToken = GenerateJwtToken(existingUser);
+
+                return Ok(jwtToken);
+                // return Ok(new RegistrationResponse()
+                //{
+                //  Success = true,
+                //Token = jwtToken
+                //});
+            }
+
+            return BadRequest(new RegistrationResponse()
+            {
+                Errors = new List<string>(){
                     "Invalid payload"
                 },
-                    Success = false
-                });
-            }
+                Success = false
+            });
+        }
 
         [HttpPost]
         [Route("RefreshToken")]
@@ -242,7 +242,9 @@ namespace PaymentAPI.Controllers
                 {
                     return new AuthResult()
                     {
-                        Success = false,
+
+                        Success = true,
+                        // Success = false,
                         Errors = new List<string>() {
                             "Token has not yet expired"
                         }
